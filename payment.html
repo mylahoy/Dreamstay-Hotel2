@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DreamStay Hotel - Payment</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Montserrat', 'Roboto', Tahoma, sans-serif;
+      background: #f7f9fa;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 500px;
+      margin: 3em auto;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      padding: 2em;
+    }
+    h1 {
+      color: #a17171;
+      text-align: center;
+      margin-bottom: 1em;
+    }
+    .summary {
+      margin-bottom: 2em;
+      font-size: 1.1em;
+      font-weight: bold;
+      color: #a17171;
+      text-align: left;
+    }
+    .summary .label {
+      font-weight: normal;
+      color: #555;
+      margin-right: 0.5em;
+    }
+    .summary .value {
+      font-weight: bold;
+      color: #222;
+    }
+    label {
+      display: block;
+      margin-top: 1em;
+      font-weight: 500;
+      color: #333;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.5em;
+      margin-top: 0.5em;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 1em;
+      box-sizing: border-box;
+    }
+    button {
+      margin-top: 2em;
+      padding: 0.7em 2em;
+      background: #a17171;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 1.1em;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    #paymentResult {
+      margin-top: 2em;
+      color: green;
+      font-weight: bold;
+      text-align: center;
+    }
+    #receipt {
+      display: none;
+      margin-top: 2em;
+      background: #f7f9fa;
+      border-radius: 10px;
+      padding: 1.5em;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    #receipt h2 {
+      color: #a17171;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Payment</h1>
+    <div class="summary" id="bookingSummary">
+      <!-- Booking details will appear here -->
+    </div>
+    <form id="paymentForm" autocomplete="off">
+      <label for="paymentMethod">Payment Method:</label>
+      <select id="paymentMethod" required>
+        <option value="">Select...</option>
+        <option value="Credit Card">Credit Card</option>
+        <option value="Bank Transfer">Bank Transfer</option>
+        <option value="GCash">GCash</option>
+        <option value="PayMaya">PayMaya</option>
+        <option value="Cash">Cash</option>
+      </select>
+      <div id="cardDetails" style="display:none;">
+        <label for="cardNumber">Card Number:</label>
+        <input type="text" id="cardNumber" maxlength="16" pattern="\d{16}" placeholder="Enter card number">
+      </div>
+      <div style="text-align:center;">
+        <button type="submit">Pay Now</button>
+      </div>
+    </form>
+    <div id="paymentResult"></div>
+    <div id="receipt">
+      <h2>Receipt</h2>
+      <div style="text-align:center; margin-bottom:1em;">
+        <span style="font-size:1.2em; font-weight:bold; color:#14b2cb;">
+            <span style="font-size:1.5em; display:block; margin-bottom:0.2em;">
+            Thank You for Choosing DreamStay Hotel!
+            We Look Forward to Welcoming You Soon!
+          </span>
+        </span>
+      </div>
+      <div id="receiptDetails"></div>
+    </div>
+  </div>
+  <script>
+    // Retrieve booking details from sessionStorage
+    const guestName = sessionStorage.getItem('guestName') || "";
+const email = sessionStorage.getItem('email') || "";
+const phone = sessionStorage.getItem('phone') || "";
+const roomType = sessionStorage.getItem('roomType') || "";
+const nights = sessionStorage.getItem('nights') || "";
+const rooms = sessionStorage.getItem('rooms') || "";
+const pricePerNight = sessionStorage.getItem('pricePerNight') || "0";
+const checkin = sessionStorage.getItem('checkin') || "";
+const checkout = sessionStorage.getItem('checkout') || "";
+const adults = sessionStorage.getItem('adults') || "";
+const children = sessionStorage.getItem('children') || "";
+const requests = sessionStorage.getItem('requests') || "";
+
+    // Calculate total
+    const total = Number(pricePerNight) * Number(nights) * Number(rooms);
+
+    // Format price for display
+    function formatPeso(amount) {
+      return '₱' + Number(amount).toLocaleString();
+    }
+
+    document.getElementById('bookingSummary').innerHTML = `
+      <div><span class="label">Guest Name:</span> <span class="value">${guestName}</span></div>
+      <div><span class="label">Email:</span> <span class="value">${email}</span></div>
+      <div><span class="label">Phone:</span> <span class="value">${phone}</span></div>
+      <div><span class="label">Room Type:</span> <span class="value">${roomType}</span></div>
+      <div><span class="label">Check-in:</span> <span class="value">${checkin}</span></div>
+      <div><span class="label">Check-out:</span> <span class="value">${checkout}</span></div>
+      <div><span class="label">Nights:</span> <span class="value">${nights}</span></div>
+      <div><span class="label">Rooms:</span> <span class="value">${rooms}</span></div>
+      <div><span class="label">Adults:</span> <span class="value">${adults}</span></div>
+      <div><span class="label">Children:</span> <span class="value">${children}</span></div>
+      <div><span class="label">Special Requests:</span> <span class="value">${requests}</span></div>
+      <div style="margin-top:1em;">
+        <span class="label">Total:</span>
+        <span class="value" style="font-size:1.3em;">${formatPeso(total)}</span>
+      </div>
+    `;
+
+    // Show card input only for Credit Card
+    document.getElementById('paymentMethod').addEventListener('change', function() {
+      const showCard = this.value === 'Credit Card';
+      document.getElementById('cardDetails').style.display = showCard ? 'block' : 'none';
+      document.getElementById('cardNumber').required = showCard;
+    });
+
+    // Handle payment form submission
+    document.getElementById('paymentForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const paymentMethod = document.getElementById('paymentMethod').value;
+      if (paymentMethod === 'Credit Card') {
+        const cardNumber = document.getElementById('cardNumber').value;
+        if (!/^\d{16}$/.test(cardNumber)) {
+          document.getElementById('paymentResult').textContent = 'Please enter a valid 16-digit card number.';
+          document.getElementById('paymentResult').style.color = 'red';
+          return;
+        }
+      }
+      document.getElementById('paymentResult').style.color = 'green';
+      document.getElementById('paymentResult').textContent = 'Payment successful! Thank you for booking with DreamStay Hotel.';
+      this.reset();
+      document.getElementById('cardDetails').style.display = 'none';
+
+      // Show receipt
+      document.getElementById('receipt').style.display = 'block';
+      document.getElementById('receiptDetails').innerHTML = `
+        <p><strong>Guest Name:</strong> ${guestName}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Phone:</strong> ${phone}</p>
+        <p><strong>Room Type:</strong> ${roomType}</p>
+        <p><strong>Check-in:</strong> ${checkin}</p>
+        <p><strong>Check-out:</strong> ${checkout}</p>
+        <p><strong>Nights:</strong> ${nights}</p>
+        <p><strong>Rooms:</strong> ${rooms}</p>
+        <p><strong>Adults:</strong> ${adults}</p>
+        <p><strong>Children:</strong> ${children}</p>
+        <p><strong>Special Requests:</strong> ${requests}</p>
+        <p><strong>Payment Method:</strong> ${paymentMethod}</p>
+        <p style="font-size:1.2em; margin-top:1em;"><strong>Total Paid:</strong> ${formatPeso(total)}</p>
+        <p style="margin-top:1em; color:#888;">Date: ${new Date().toLocaleString()}</p>
+      `;
+    });
+  </script>
+</body>
+</html>

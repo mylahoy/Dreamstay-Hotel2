@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DreamStay Hotel - Booking</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700|Roboto:400,500&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Montserrat', 'Roboto', Tahoma, sans-serif; background: #bae9e7; margin: 0; padding: 0; }
+    .container { max-width: 500px; margin: 2em auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 2em; }
+    h1 { color: #a17171; text-align: center; }
+    label { display: block; margin-top: 1em; }
+    input, select, textarea, button { width: 100%; padding: 0.5em; margin-top: 0.5em; border-radius: 5px; border: 1px solid #ccc; font-size: 1em; box-sizing: border-box; }
+    button { background: #a17171; color: #fff; border: none; margin-top: 2em; cursor: pointer; }
+    #bookingSummary { margin-top: 2em; color: #a17171; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Book Your Stay</h1>
+    <form id="bookingForm">
+      <label for="guestName">Guest Name:</label>
+      <input type="text" id="guestName" required>
+      <label for="email">Email:</label>
+      <input type="email" id="email" required>
+      <label for="phone">Phone Number:</label>
+      <input type="tel" id="phone" required>
+      <label for="checkin">Check-in:</label>
+      <input type="date" id="checkin" required>
+      <label for="nights">Number of Nights:</label>
+      <input type="number" id="nights" min="1" required>
+      <label for="checkout">Check-out:</label>
+      <input type="date" id="checkout" required>
+      <label for="rooms">Number of Rooms:</label>
+      <input type="number" id="rooms" min="1" required>
+      <label for="roomType">Room Type:</label>
+      <select id="roomType">
+        <option>Standard</option>
+        <option>Deluxe</option>
+        <option>Suite</option>
+        <option>Family</option>
+      </select>
+      <label for="adults">Adults:</label>
+      <input type="number" id="adults" min="1" required>
+      <label for="children">Children:</label>
+      <input type="number" id="children" min="0" required>
+      <label for="requests">Special Requests:</label>
+      <textarea id="requests" rows="2"></textarea>
+      <button type="submit">Submit Booking</button>
+    </form>
+    <div id="bookingSummary"></div>
+  </div>
+  <script>
+    // Update checkout date when checkin or nights changes
+    document.getElementById('checkin').addEventListener('change', updateCheckout);
+    document.getElementById('nights').addEventListener('input', updateCheckout);
+
+    function updateCheckout() {
+      const checkin = document.getElementById('checkin').value;
+      const nights = parseInt(document.getElementById('nights').value, 10);
+      if (checkin && nights > 0) {
+        const checkinDate = new Date(checkin);
+        checkinDate.setDate(checkinDate.getDate() + nights);
+        const yyyy = checkinDate.getFullYear();
+        const mm = String(checkinDate.getMonth() + 1).padStart(2, '0');
+        const dd = String(checkinDate.getDate()).padStart(2, '0');
+        document.getElementById('checkout').value = `${yyyy}-${mm}-${dd}`;
+      }
+    }
+
+    // Update nights if user changes checkout date
+    document.getElementById('checkout').addEventListener('input', function() {
+      const checkin = document.getElementById('checkin').value;
+      const checkout = document.getElementById('checkout').value;
+      if (checkin && checkout) {
+        const checkinDate = new Date(checkin);
+        const checkoutDate = new Date(checkout);
+        const nights = Math.max(0, (checkoutDate - checkinDate) / (1000 * 60 * 60 * 24));
+        document.getElementById('nights').value = nights;
+      }
+    });
+
+    document.getElementById("bookingForm").onsubmit = function(e) {
+      e.preventDefault();
+      // Get form values
+      const guestName = document.getElementById('guestName').value;
+      const email = document.getElementById('email').value;
+      const phone = document.getElementById('phone').value;
+      const checkin = document.getElementById('checkin').value;
+      const nights = parseInt(document.getElementById('nights').value, 10);
+      const checkout = document.getElementById('checkout').value;
+      const rooms = parseInt(document.getElementById('rooms').value, 10);
+      const roomType = document.getElementById('roomType').value;
+      const adults = document.getElementById('adults').value;
+      const children = document.getElementById('children').value;
+      const requests = document.getElementById('requests').value;
+
+      // Room prices
+      const prices = {
+        "Standard": 2500,
+        "Deluxe": 4000,
+        "Suite": 6500,
+        "Family": 7500
+      };
+      const pricePerNight = prices[roomType] || 0;
+      const total = pricePerNight * nights * rooms;
+
+      // Show summary
+      document.getElementById('bookingSummary').innerHTML = `
+        <p><strong>Room Type:</strong> ${roomType}</p>
+        <p><strong>Check-in:</strong> ${checkin}</p>
+        <p><strong>Check-out:</strong> ${checkout}</p>
+        <p><strong>Number of Nights:</strong> ${nights}</p>
+        <p><strong>Number of Rooms:</strong> ${rooms}</p>
+        <p><strong>Adults:</strong> ${adults}</p>
+        <p><strong>Children:</strong> ${children}</p>
+        <p><strong>Special Requests:</strong> ${requests ? requests : 'None'}</p>
+        <p><strong>Total:</strong> ₱${total.toLocaleString()}</p>
+        <button onclick="proceedToPayment()">Proceed to Payment</button>
+      `;
+
+      // Save to sessionStorage for payment.html
+      sessionStorage.setItem('guestName', guestName);
+      sessionStorage.setItem('email', email);
+      sessionStorage.setItem('phone', phone);
+      sessionStorage.setItem('roomType', roomType);
+      sessionStorage.setItem('nights', nights);
+      sessionStorage.setItem('rooms', rooms);
+      sessionStorage.setItem('pricePerNight', pricePerNight);
+      sessionStorage.setItem('checkin', checkin);
+      sessionStorage.setItem('checkout', checkout);
+      sessionStorage.setItem('adults', adults);
+      sessionStorage.setItem('children', children);
+      sessionStorage.setItem('requests', requests);
+    };
+
+    function proceedToPayment() {
+      window.location.href = "payment.html";
+    }
+
+    // Prefill room type if coming from Book Now button
+    window.onload = function() {
+      let roomType = sessionStorage.getItem('roomType');
+      if (roomType) {
+        document.getElementById('roomType').value = roomType;
+      }
+    };
+  </script>
+</body>
+</html>

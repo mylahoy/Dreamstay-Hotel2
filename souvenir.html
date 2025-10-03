@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Souvenir Shop - DreamStay Hotel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700|Roboto:400,500&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Montserrat', 'Roboto', Tahoma, sans-serif; background: #bae9e7; margin: 0; padding: 0; }
+    .container { max-width: 900px; margin: 2em auto; background: #fffbe9; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 2em; }
+    h1 { color: #a17171; text-align: center; margin-bottom: 1em; }
+    .shop-list { display: flex; flex-wrap: wrap; gap: 2em; justify-content: center; margin-top: 2em; }
+    .item-card { background: #f7f9fa; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); padding: 1em; width: 220px; text-align: center; }
+    .item-card img { width: 100px; height: 100px; object-fit: cover; border-radius: 8px; margin-bottom: 1em; }
+    .item-card h2 { color: #a17171; font-size: 1.1em; margin-bottom: 0.5em; }
+    .item-card p { color: #333; font-size: 0.95em; margin-bottom: 0.5em; }
+    .item-card .price { color: #a17171; font-weight: bold; font-size: 1em; margin-bottom: 1em; }
+    .item-card label { font-size: 0.95em; }
+    .item-card input[type=number] { width: 50px; margin-bottom: 0.5em; }
+    .item-card button { background: #a17171; color: #fff; border: none; border-radius: 6px; padding: 0.5em 1.2em; font-size: 1em; cursor: pointer; }
+    .item-card button:hover { background: #d19c9c; }
+    .shop-actions { text-align: center; margin-top: 2em; }
+    .cart-btn { background: #a17171; color: #fff; border: none; border-radius: 6px; padding: 0.7em 2em; font-size: 1em; cursor: pointer; }
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 2000; }
+    .cart-modal-content { background: white; padding: 2em; border-radius: 10px; max-width: 400px; margin: auto; position: relative; text-align: center; outline: none; }
+    .cart-modal-close { position: absolute; top: 10px; right: 20px; cursor: pointer; font-size: 1.5em; }
+    #cartTotal { margin-top: 1em; font-weight: bold; }
+    .pay-btn { background: #7ab6de; color: #fff; border: none; border-radius: 6px; padding: 0.7em 2em; font-size: 1em; cursor: pointer; margin-top: 1em; }
+    .thankyou { margin-top: 1em; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Souvenir Shop</h1>
+    <div class="shop-list" id="shopList"></div>
+    <div class="shop-actions">
+      <button onclick="openCartModal()" class="cart-btn" aria-label="View Cart">View Cart</button>
+    </div>
+    <div id="cartModal" class="modal" aria-modal="true" role="dialog" tabindex="-1">
+      <div class="cart-modal-content">
+        <span class="cart-modal-close" onclick="closeCartModal()" aria-label="Close Cart">&times;</span>
+        <h2>Your Cart</h2>
+        <div id="cartItems"></div>
+        <div id="cartTotal"></div>
+        <button onclick="openCheckoutModal()" class="pay-btn" aria-label="Checkout">Checkout</button>
+      </div>
+    </div>
+    <div id="checkoutModal" class="modal" aria-modal="true" role="dialog" tabindex="-1">
+      <div class="cart-modal-content">
+        <span class="cart-modal-close" onclick="closeCheckoutModal()" aria-label="Close Checkout">&times;</span>
+        <h2>Checkout</h2>
+        <form id="checkoutForm" style="text-align:left;">
+          <label for="customerName">Name:</label><br>
+          <input type="text" id="customerName" name="customerName" required><br><br>
+          <label for="customerEmail">Email:</label><br>
+          <input type="email" id="customerEmail" name="customerEmail" required><br><br>
+          <label for="customerPhone">Phone:</label><br>
+          <input type="tel" id="customerPhone" name="customerPhone" required><br><br>
+          <label for="paymentOption">Payment Option:</label><br>
+          <select id="paymentOption" name="paymentOption" required>
+            <option value="">Select...</option>
+            <option value="Cash">Cash</option>
+            <option value="Credit Card">Credit Card</option>
+            <option value="GCash">GCash</option>
+            <option value="PayMaya">PayMaya</option>
+          </select><br><br>
+          <button type="submit" class="pay-btn">Pay Now</button>
+        </form>
+      </div>
+    </div>
+    <div id="receiptModal" class="modal" aria-modal="true" role="dialog" tabindex="-1">
+      <div class="cart-modal-content">
+        <span class="cart-modal-close" onclick="closeReceiptModal()" aria-label="Close Receipt">&times;</span>
+        <h2>Receipt</h2>
+        <div id="receiptDetails"></div>
+        <div class="thankyou">Thank you for your purchase!</div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const products = [
+  {
+    name: 'DreamStay Kids Shirt',
+    basePrice: 350,
+    img: 'souvenir images/kidsShirt.png',
+    desc: 'Kids cotton shirt with hotel logo.',
+    sizes: [
+      { label: 'S', add: 0 },
+      { label: 'M', add: 50 },
+      { label: 'L', add: 100 }
+    ],
+    colors: ['White', 'Pink', 'Blue', 'Yellow'],
+    category: 'Kids'
+  },
+  {
+    name: 'DreamStay Adult Shirt',
+    basePrice: 450,
+    img: 'souvenir images/adultShirt.png',
+    desc: 'Adult cotton shirt with hotel logo.',
+    sizes: [
+      { label: 'S', add: 0 },
+      { label: 'M', add: 50 },
+      { label: 'L', add: 100 },
+      { label: 'XL', add: 150 }
+    ],
+    colors: ['White', 'Black', 'Blue', 'Red'],
+    category: 'Adult'
+  },
+  { name: 'DreamStay Mug', price: 200, img: 'souvenir images/mug.png', desc: 'Ceramic mug with DreamStay design.' },
+  { name: 'DreamStay Hat', price: 350, img: 'souvenir images/hat.png', desc: 'Stylish cap with embroidered logo.' },
+  { name: 'Local Snacks', price: 180, img: 'souvenir images/mix nuts.png', desc: 'Assorted specialty treats from Port Macquarie.' },
+  { name: 'Artisan Crafts', price: 600, img: 'souvenir images/artisan craft.png', desc: 'Handmade crafts by local artists.' },
+  { name: 'DreamStay Postcard', price: 50, img: 'souvenir images/postcard.png', desc: 'Beautiful postcard for your travel memories.' },
+  { name: 'Travel Toiletries', price: 120, img: 'souvenir images/toiletries.png', desc: 'Essential travel-size toiletries kit.' },
+  { name: 'Gift Wrapping', price: 30, img: 'souvenir images/giftwrap.png', desc: 'Gift wrapping service for your souvenirs.' }
+];
+    let cart = [];
+    function renderProducts() {
+      const shopList = document.getElementById('shopList');
+      shopList.innerHTML = '';
+      products.forEach((prod, idx) => {
+        const div = document.createElement('div');
+        div.className = 'item-card';
+        let sizeSelect = '';
+        let colorSelect = '';
+        let priceDisplay = `<div class='price'>₱${prod.basePrice || prod.price}</div>`;
+        let categoryDisplay = '';
+        if (prod.sizes) {
+          sizeSelect = `<label for='size${idx}'>Size:</label> <select id='size${idx}' name='size${idx}' onchange='updatePrice(${idx})'>${prod.sizes.map(s => `<option value='${s.label}'>${s.label}</option>`).join('')}</select>`;
+          priceDisplay = `<div class='price' id='price${idx}'>₱${prod.basePrice}</div>`;
+          categoryDisplay = `<div><strong>Category:</strong> ${prod.category}</div>`;
+        }
+        if (prod.colors) {
+          colorSelect = `<label for='color${idx}'>Color:</label> <select id='color${idx}' name='color${idx}'>${prod.colors.map(c => `<option value='${c}'>${c}</option>`).join('')}</select>`;
+        }
+        div.innerHTML = `
+          <img src="${prod.img}" alt="${prod.name}">
+          <h2>${prod.name}</h2>
+          <p>${prod.desc}</p>
+          ${categoryDisplay}
+          ${sizeSelect}
+          ${colorSelect}
+          ${priceDisplay}
+          <label for='qty${idx}'>Qty:</label>
+          <input type='number' id='qty${idx}' min='0' value='0'>
+          <button onclick='addToCart(${idx})'>Add to Cart</button>
+        `;
+        shopList.appendChild(div);
+      });
+    }
+
+    function updatePrice(idx) {
+      const prod = products[idx];
+      const size = document.getElementById('size' + idx).value;
+      const sizeObj = prod.sizes.find(s => s.label === size);
+      const newPrice = prod.basePrice + (sizeObj ? sizeObj.add : 0);
+      document.getElementById('price' + idx).textContent = `₱${newPrice}`;
+    }
+    function addToCart(idx) {
+  const prod = products[idx];
+  let price = prod.basePrice || prod.price;
+  let size = null;
+  let color = null;
+  if (prod.sizes) {
+    size = document.getElementById('size' + idx).value;
+    const sizeObj = prod.sizes.find(s => s.label === size);
+    price = prod.basePrice + (sizeObj ? sizeObj.add : 0);
+  }
+  if (prod.colors) {
+    color = document.getElementById('color' + idx).value;
+  }
+  const qty = parseInt(document.getElementById('qty' + idx).value) || 0;
+  if (qty <= 0) {
+    alert('Please select a quantity greater than 0.');
+    return;
+  }
+  // Find by name, size, and color
+  const found = cart.find(item => item.name === prod.name && item.size === size && item.color === color);
+  if (found) {
+    found.qty += qty;
+  } else {
+    cart.push({ ...prod, qty, price, size, color });
+  }
+  renderCart();
+  openCartModal();
+}
+    function openCartModal() {
+      renderCart();
+      document.getElementById('cartModal').style.display = 'flex';
+      document.getElementById('cartModal').focus();
+    }
+    function closeCartModal() {
+      document.getElementById('cartModal').style.display = 'none';
+    }
+    function renderCart() {
+      const itemsDiv = document.getElementById('cartItems');
+      if (cart.length === 0) {
+        itemsDiv.innerHTML = '<p>Your cart is empty.</p>';
+        document.getElementById('cartTotal').textContent = '';
+        return;
+      }
+      let total = 0;
+      itemsDiv.innerHTML = cart.map((item, idx) => {
+        return `<div>${item.name} x <input type='number' min='1' value='${item.qty}' style='width:40px;' onchange='updateCartQty(${idx}, this.value)'> — ₱${item.price * item.qty} <button onclick='removeFromCart(${idx})' style='margin-left:8px;'>Remove</button></div>`;
+      }).join('');
+      total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+      document.getElementById('cartTotal').textContent = 'Total: ₱' + total;
+    }
+    function updateCartQty(idx, value) {
+      const qty = Math.max(0, parseInt(value) || 0);
+      cart[idx].qty = qty;
+      renderCart();
+    }
+    function removeFromCart(idx) {
+      cart.splice(idx, 1);
+      renderCart();
+    }
+    function openCheckoutModal() {
+      closeCartModal();
+      document.getElementById('checkoutModal').style.display = 'flex';
+      document.getElementById('checkoutModal').focus();
+    }
+    function closeCheckoutModal() {
+      document.getElementById('checkoutModal').style.display = 'none';
+    }
+    document.getElementById('checkoutForm').onsubmit = function(e) {
+  e.preventDefault();
+  const name = document.getElementById('customerName').value;
+  const email = document.getElementById('customerEmail').value;
+  const phone = document.getElementById('customerPhone').value;
+  const payment = document.getElementById('paymentOption').value;
+  let total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+  let details = `<table style='width:100%;border-collapse:collapse;'>`;
+  details += `<tr style='background:#f7f7f7;'><th style='text-align:left;padding:4px;'>Product</th><th style='text-align:center;padding:4px;'>Qty</th><th style='text-align:right;padding:4px;'>Subtotal</th></tr>`;
+  cart.forEach(item => {
+    let prod = item.name;
+    if (item.size) prod += ' (' + item.size + ')';
+    if (item.color) prod += ' - ' + item.color;
+    details += `<tr><td style='padding:4px;'>${prod}</td><td style='text-align:center;padding:4px;'>${item.qty}</td><td style='text-align:right;padding:4px;'>₱${item.price * item.qty}</td></tr>`;
+  });
+  details += `<tr><td colspan='2' style='text-align:right;padding:4px;'><strong>Total Paid:</strong></td><td style='text-align:right;padding:4px;'><strong>₱${total}</strong></td></tr>`;
+  details += `</table>`;
+  details += `<br><strong>Customer Details:</strong><br>Name: ${name}<br>Email: ${email}<br>Phone: ${phone}<br>Payment Option: ${payment}`;
+  document.getElementById('receiptDetails').innerHTML = details;
+  closeCheckoutModal();
+  document.getElementById('receiptModal').style.display = 'flex';
+  document.getElementById('receiptModal').focus();
+  cart = [];
+  this.reset();
+};
+    function closeReceiptModal() {
+      document.getElementById('receiptModal').style.display = 'none';
+    }
+    document.addEventListener('DOMContentLoaded', renderProducts);
+  </script>
+</body>
+</html>

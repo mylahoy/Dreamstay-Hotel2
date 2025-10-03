@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <title>DreamStay Hotel</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700|Roboto:400,500&display=swap" rel="stylesheet">
+  <style>
+    body { 
+      font-family: 'Montserrat', 'Roboto', Tahoma, sans-serif; 
+      margin: 0; 
+      padding: 0; 
+      background: #badfe9;
+    }
+    header { background: #e1a1ec; color: rgb(217, 97, 97); padding: 1em; text-align: center; }
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .nav-links a { color: rgb(33, 88, 225); margin: 0 1em; text-decoration: none; }
+    section { padding: 2em; text-align: center; }
+    .room-list { display: flex; justify-content: space-around; flex-wrap: wrap; }
+    .room { border: 1px solid #f2c8c8; border-radius: 8px; padding: 1em; margin: 1em; width: 250px; }
+    .room img { width: 100%; border-radius: 8px; }
+    .modal-room-card {
+      flex: 1;
+      min-width: 200px;
+      background: #bce3f0;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(149, 180, 202, 0.04);
+      padding: 1em;
+    }
+    .room-details {
+      margin-top: 1em;
+      font-size: 0.95em;
+      text-align: left;
+    }
+    form { 
+      max-width: 400px; 
+      margin: 2em 0 2em 2em;
+      display: flex; 
+      flex-direction: column; 
+      text-align: left;
+      align-items: flex-start;
+    }
+    form label { margin-top: 1em; }
+    form input, form select, form button, form textarea { padding: 0.5em; margin-top: 0.5em; }
+    .gallery { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: 2em; }
+    .gallery img { width: 200px; cursor: pointer; border-radius: 8px; }
+    #lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 2000; }
+    #lightbox img { max-width: 90%; max-height: 90%; border-radius: 8px; transition:transform 0.2s; }
+    address { text-align: center; margin-top: 2em; font-style: normal; }
+    iframe { width: 100%; height: 300px; border: none; margin-top: 2em; }
+    footer { text-align: center; margin-top: 2em; }
+    .testimonials blockquote { margin: 1em auto; max-width: 500px; font-style: italic; }
+    .faq { margin-top: 2em; }
+    .amenities {
+      text-align: center;
+      padding-right: 0;
+    }
+    .amenities ul {
+      margin: 2em auto 0 auto;
+      max-width: 400px;
+      text-align: left;
+    }
+    .four-column {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      gap: 0.05em;
+      padding: 2em;
+      background: #eeeca8;
+    }
+    .four-col {
+      flex: 1 1 22%;
+      min-width: 220px;
+      max-width: 320px;
+      padding: 1.5em 1em;
+      box-sizing: border-box;
+      text-align: left;
+      background: #80ebeb;
+      border-radius: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      border: 3px solid #d0e6e6; /* Thicker border */
+      margin: 0;
+      transition: box-shadow 0.2s;
+    }
+    /* Responsive: stack columns on small screens */
+    @media (max-width: 900px) {
+      .four-column {
+        gap: 1em;
+      }
+      .four-col {
+        min-width: 180px;
+        max-width: 100%;
+        flex: 1 1 45%;
+        margin-bottom: 1em;
+      }
+    }
+    @media (max-width: 600px) {
+      .four-column {
+        flex-direction: column;
+        gap: 1em;
+        padding: 1em;
+      }
+      .four-col {
+        min-width: 0;
+        max-width: 100%;
+        flex: 1 1 100%;
+        margin-bottom: 0;
+      }
+    }
+  </style>
+</head>
+<script>
+  function bookNow(roomType, pricePerNight) {
+    sessionStorage.setItem('roomType', roomType);
+    sessionStorage.setItem('price', pricePerNight);
+    window.location.href = 'booking.html';
+  }
+</script>
+<body>
+  <!-- Header and Navigation -->
+  <header>
+    <img src="images/dreamstaylogo.png" alt="DreamStay Hotel Logo" style="height:120px; margin-bottom:0.5em;background-color: azure;position: relative;">
+    <h1 style="font-size:xx-large;font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; color:#701d99;">DreamStay Hotel</h1>
+    <nav>
+      <div class="nav-links" style="flex-grow:1; text-align: justify; font-size:x-large;font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">
+        <a href="index.html">Home</a>
+        <a href="rooms.html">Rooms</a>
+        <a href="booking.html">Booking</a>  
+        <a href="gallery.html">Gallery</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <div class="nav-links" style="flex-grow:1; text-align: right;font-size:x-large;font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">
+        <a href="souvenir.html">Souvenir Shop</a>  
+        <a href="aboutus.html">About Us</a>
+        <a href="signIn.html">Sign In</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section>
+    <marquee direction="left" behavior="scroll" scrollamount="10" style="font-size:xx-large; font-weight:bold; color:#a17171; background:#c5f3a1; border-radius:10px; padding:0.7em 0; margin-bottom:1em;text-align: center;">
+      <span style="display:block;">
+        RELAX, RECHARGE, RECONNECT
+        <br>
+        <span style="font-size:xx-large; font-weight:normal;text-align: center;font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">
+          EXPERIENCE THE LUXURY AND COMFORT IN THE HEART OF PORT MACQUARIE.
+        </span>
+      </span>
+    </marquee>
+  </section>
+  <!-- Room List -->
+  <section class="room-list">
+    <div class="room">
+      <img src="images/standardroom1.jpg" alt="Standard Room">
+      <h3>Standard Room</h3>
+      <p>₱2,500/night</p>
+      <p>Cozy room with queen bed, ensuite bathroom, and city view.</p>
+      <button onclick="bookNow('Standard',2500)">Book Now</button>
+      <div class="room-details">
+        <ul>
+          <li>✔️ Air Conditioning</li>
+          <li>✔️ Free Wi-Fi</li>
+          <li>✔️ Flat-screen TV</li>
+          <li>✔️ Complimentary toiletries</li>
+          <li>✔️ Daily housekeeping</li>
+        </ul>
+        <p><strong>Cancellation Policy:</strong> Free cancellation up to 24 hours before check-in.</p>
+        <p><strong>Max Occupancy:</strong> 2 adults</p>
+      </div>
+    </div>
+    <div class="room">
+      <img src="images/deluxeroom.png" alt="Deluxe Room">
+      <h3>Deluxe Room</h3>
+      <p>₱4,000/night</p>
+      <p>Spacious room with king bed, ensuite bathroom, and balcony.</p>
+      <button onclick="bookNow('Deluxe', 4000)">Book Now</button>
+      <div class="room-details">
+        <ul>
+          <li>✔️ Air Conditioning</li>
+          <li>✔️ Free Wi-Fi</li>
+          <li>✔️ Flat-screen TV</li>
+          <li>✔️ Balcony with view</li>
+          <li>✔️ Complimentary toiletries</li>
+          <li>✔️ Daily housekeeping</li>
+        </ul>
+        <p><strong>Cancellation Policy:</strong> Free cancellation up to 24 hours before check-in.</p>
+        <p><strong>Max Occupancy:</strong> 3 adults</p>
+      </div>
+    </div>
+    <div class="room">
+      <img src="images/suiteroom.png" alt="Suite">
+      <h3>Suite</h3>
+      <p>₱6,500/night</p>
+      <p>Private suite with king bed, ensuite bathroom, and living room.</p>
+      <button onclick="bookNow('Suite', 6500)">Book Now</button>
+      <div class="room-details">
+        <ul>
+          <li>✔️ Air Conditioning</li>
+          <li>✔️ Free Wi-Fi</li>
+          <li>✔️ Flat-screen TV</li>
+          <li>✔️ Living area</li>
+          <li>✔️ Complimentary toiletries</li>
+          <li>✔️ Daily housekeeping</li>
+          <li>✔️ Mini bar</li>
+        </ul>
+        <p><strong>Cancellation Policy:</strong> Free cancellation up to 24 hours before check-in.</p>
+        <p><strong>Max Occupancy:</strong> 4 adults</p>
+      </div>
+    </div>
+    <div class="room">
+      <img src="images/familyroom.png" alt="Family Room">
+      <h3>Family Room</h3>
+      <p>₱7,500/night</p>
+      <p>Spacious family room with two queen beds, ensuite bathroom, and play area for kids.</p>
+      <button onclick="bookNow('Family', 7500)">Book Now</button>
+      <div class="room-details">
+        <ul>
+          <li>✔️ Air Conditioning</li>
+          <li>✔️ Free Wi-Fi</li>
+          <li>✔️ Flat-screen TV</li>
+          <li>✔️ Play area for kids</li>
+          <li>✔️ Complimentary toiletries</li>
+          <li>✔️ Daily housekeeping</li>
+          <li>✔️ Mini fridge</li>
+        </ul>
+        <p><strong>Cancellation Policy:</strong> Free cancellation up to 24 hours before check-in.</p>
+        <p><strong>Max Occupancy:</strong> 4 adults + 2 children</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Booking, Amenities, Reviews, and Other Services - Four Column Section -->
+  <div class="four-column">
+    <div class="four-col"> 
+      <h2 style="text-align: center;">Booking</h2>
+      <!-- Booking Form -->
+      <form id="bookingForm">
+        <label for="guest name">Guest Name:</label>
+        <input type="text" id="guest name" required>
+        <label for="email">Email:</label>
+        <input type="email" id="email" required>
+        <label for="phone">Phone Number:</label>
+        <input type="tel" id="phone" required>
+        <label for="checkin">Check-in:</label>
+        <input type="date" id="checkin" required>
+        <label for="number of nights">Number of Nights:</label>
+        <input type="number" id="nights" min="1" required placeholder="Enter number of nights" title="Number of Nights">
+        <label for="checkout">Check-out:</label>
+        <input type="date" id="checkout" required readonly>
+        <label for ="number of rooms">Number of Rooms:</label>
+        <input type="number" id ="rooms" min="1" required placeholder="Enter number of rooms" title="Number of Rooms">
+        <label for="room">Room Type:</label>
+        <select id="room">
+          <option>Standard</option>
+          <option>Deluxe</option>
+          <option>Suite</option>
+          <option>Family Room</option>
+        </select>
+        <label for="adults">Adults:</label>
+        <input type="number" id="adults" min="1" required>
+        <label for="children">Children:</label>
+        <input type="number" id="children" min="0" required>
+        <div id="childrenAgesContainer" style="margin-bottom:1em;"></div>
+        <label for="requests">Special Requests:</label>
+        <textarea id="requests" rows="2"></textarea>
+        <button type="submit">Submit</button>
+      </form>
+      <script>
+        document.getElementById('children').addEventListener('input', function() {
+          const container = document.getElementById('childrenAgesContainer');
+          container.innerHTML = '';
+          const count = parseInt(this.value, 10);
+          if (!isNaN(count) && count > 0) {
+            for (let i = 1; i <= count; i++) {
+              const label = document.createElement('label');
+              label.textContent = `Child ${i} Age:`;
+              label.setAttribute('for', `childAge${i}`);
+              label.style.display = 'block';
+              const input = document.createElement('input');
+              input.type = 'number';
+              input.id = `childAge${i}`;
+              input.name = `childAge${i}`;
+              input.min = '0';
+              input.max = '17';
+              input.required = true;
+              input.style.marginBottom = '0.5em';
+              container.appendChild(label);
+              container.appendChild(input);
+            }
+          }
+        });
+
+        // Update check-out date based on check-in and number of nights
+        document.getElementById('checkin').addEventListener('change', updateCheckout);
+        document.getElementById('nights').addEventListener('input', updateCheckout);
+
+        function updateCheckout() {
+          const checkin = document.getElementById('checkin').value;
+          const nights = parseInt(document.getElementById('nights').value, 10);
+          if (checkin && nights > 0) {
+            const checkinDate = new Date(checkin);
+            checkinDate.setDate(checkinDate.getDate() + nights);
+            // Format date as yyyy-mm-dd
+            const yyyy = checkinDate.getFullYear();
+            const mm = String(checkinDate.getMonth() + 1).padStart(2, '0');
+            const dd = String(checkinDate.getDate()).padStart(2, '0');
+            document.getElementById('checkout').value = `${yyyy}-${mm}-${dd}`;
+          }
+        }
+
+        document.getElementById("bookingForm").onsubmit = function(e) {
+          e.preventDefault();
+
+          // Get form values
+          const nights = parseInt(document.getElementById('nights').value, 10);
+          const rooms = parseInt(document.getElementById('rooms').value, 10);
+          const roomType = document.getElementById('room').value;
+
+          // Room prices
+          const prices = {
+            "Standard": 2500,
+            "Deluxe": 4000,
+            "Suite": 6500,
+            "Family Room": 7500
+          };
+          const pricePerNight = prices[roomType] || 0;
+          const total = pricePerNight * nights * rooms;
+
+          // Show summary modal
+          document.getElementById('bookingSummary').innerHTML = `
+            <p><strong>Room Type:</strong> ${roomType}</p>
+            <p><strong>Number of Nights:</strong> ${nights}</p>
+            <p><strong>Number of Rooms:</strong> ${rooms}</p>
+            <p><strong>Total:</strong> ₱${total.toLocaleString()}</p>
+          `;
+          document.getElementById('paymentModal').style.display = 'flex';
+
+          // Save to sessionStorage
+          sessionStorage.setItem('guestName', document.getElementById('guest name').value);
+          sessionStorage.setItem('email', document.getElementById('email').value);
+          sessionStorage.setItem('phone', document.getElementById('phone').value);
+          sessionStorage.setItem('roomType', document.getElementById('room').value);
+          sessionStorage.setItem('nights', document.getElementById('nights').value);
+          sessionStorage.setItem('rooms', document.getElementById('rooms').value);
+          sessionStorage.setItem('pricePerNight', pricePerNight);
+          sessionStorage.setItem('checkin', document.getElementById('checkin').value);
+          sessionStorage.setItem('checkout', document.getElementById('checkout').value);
+          sessionStorage.setItem('adults', document.getElementById('adults').value);
+          sessionStorage.setItem('children', document.getElementById('children').value);
+          sessionStorage.setItem('requests', document.getElementById('requests').value);
+        };
+
+        function proceedToPayment() {
+          // Redirect to payment page or show payment form
+          window.location.href = "payment.html";
+        }
+
+        let zoomLevel = 1;
+        function openLightbox(src) {
+          zoomLevel = 1;
+          const img = document.getElementById("lightbox-img");
+          img.src = src;
+          img.style.transform = "scale(1)";
+          document.getElementById("lightbox").style.display = "flex";
+        }
+        function zoomLightbox(factor) {
+          zoomLevel *= factor;
+          document.getElementById("lightbox-img").style.transform = `scale(${zoomLevel})`;
+        }
+
+        document.querySelector('nav a[href="index.html"]').onclick = function(e) {
+          e.preventDefault();
+          document.getElementById('homeModal').style.display = 'flex';
+        };
+        document.querySelector('nav a[href="rooms.html"]').onclick = function(e) {
+          e.preventDefault();
+          document.getElementById('roomsModal').style.display = 'flex';
+        };
+        document.querySelector('nav a[href="booking.html"]').onclick = function(e) {
+          e.preventDefault();
+          document.getElementById('bookingModal').style.display = 'flex';
+        };
+        document.querySelector('nav a[href="gallery.html"]').onclick = function(e) {
+          e.preventDefault();
+          document.getElementById('galleryModal').style.display = 'flex';
+        };
+        document.querySelector('nav a[href="contact.html"]').onclick = function(e) {
+          e.preventDefault();
+          document.getElementById('contactModal').style.display = 'flex';
+        };
+        document.querySelector('nav a[href="aboutus.html"]').onclick = function(e) {
+          e.preventDefault();
+          document.getElementById('aboutusModal').style.display = 'flex';
+        };
+        document.querySelector('nav a[href="signIn.html"]').onclick = function(e) {
+          e.preventDefault();
+          document.getElementById('signInModal').style.display = 'flex';
+        };
+        document.getElementById('signInForm').onsubmit = function(e) {
+          e.preventDefault();
+          alert('Sign in successful!');
+          document.getElementById('signInModal').style.display = 'none';
+        };
+        document.getElementById('forgot-link').onclick = function(e) {
+          e.preventDefault();
+          alert('Forgot Password feature coming soon!');
+        };
+        document.getElementById('create-link').onclick = function(e) {
+          e.preventDefault();
+          alert('Create Account feature coming soon!');
+        };
+        document.getElementById('google-signin').onclick = function(e) {
+          e.preventDefault();
+          alert('Google Sign-In feature coming soon!');
+        };
+        document.getElementById('fb-signin').onclick = function(e) {
+          e.preventDefault();
+          alert('Facebook Sign-In feature coming soon!');
+        };
+        function showRoomDetails(type) {
+          const rooms = {
+            standard: {
+              title: "Standard Room",
+              img: "images/standardroom1.jpg",
+              photos: [
+                "images/standardroom1.jpg",
+                "images/standardroom2.jpg"
+              ],
+              features: [
+                "Air Conditioning",
+                "Free Wi-Fi",
+                "Flat-screen TV",
+                "Complimentary toiletries",
+                "Daily housekeeping"
+              ],
+              policy: "Free cancellation up to 24 hours before check-in.",
+              occupancy: "2 adults",
+              price: "₱2,500/night",
+              review: "\"Perfect for solo travelers or couples!\""
+            },
+            deluxe: {
+              title: "Deluxe Room",
+              img: "images/deluxeroom.png",
+              photos: [
+                "images/deluxeroom.png"
+              ],
+              features: [
+                "Air Conditioning",
+                "Free Wi-Fi",
+                "Flat-screen TV",
+                "Balcony with view",
+                "Complimentary toiletries",
+                "Daily housekeeping"
+              ],
+              policy: "Free cancellation up to 24 hours before check-in.",
+              occupancy: "3 adults",
+              price: "₱4,000/night",
+              review: "\"Spacious and comfortable!\""
+            },
+            suite: {
+              title: "Suite",
+              img: "images/suiteroom.png",
+              photos: [
+                "images/suiteroom.png"
+              ],
+              features: [
+                "Air Conditioning",
+                "Free Wi-Fi",
+                "Flat-screen TV",
+                "Living area",
+                "Complimentary toiletries",
+                "Daily housekeeping",
+                "Mini bar"
+              ],
+              policy: "Free cancellation up to 24 hours before check-in.",
+              occupancy: "4 adults",
+              price: "₱6,500/night",
+              review: "\"Luxury at its best!\""
+            },
+            family: {
+              title: "Family Room",
+              img: "images/familyroom.png",
+              photos: [
+                "images/familyroom.png"
+              ],
+              features: [
+                "Air Conditioning",
+                "Free Wi-Fi",
+                "Flat-screen TV",
+                "Play area for kids",
+                "Complimentary toiletries",
+                "Daily housekeeping",
+                "Mini fridge"
+              ],
+              policy: "Free cancellation up to 24 hours before check-in.",
+              occupancy: "4 adults + 2 children",
+              price: "₱7,500/night",
+              review: "\"Great for families with kids!\""
+            }
+          };
+
+          const room = rooms[type];
+          document.getElementById('modalRoomTitle').textContent = room.title;
+          document.getElementById('modalRoomFeatures').innerHTML = room.features.map(f => `<li>✔️ ${f}</li>`).join('');
+          document.getElementById('modalRoomPolicy').innerHTML = `<strong>Cancellation Policy:</strong> ${room.policy}`;
+          document.getElementById('modalRoomOccupancy').innerHTML = `<strong>Max Occupancy:</strong> ${room.occupancy}`;
+          document.getElementById('modalRoomPrice').innerHTML = `<strong>Price:</strong> ${room.price}`;
+          document.getElementById('modalRoomReview').textContent = room.review;
+          document.getElementById('roomDetailsModal').style.display = 'flex';
+
+          // Add room photos to the modal
+          const photosContainer = document.getElementById('modalRoomPhotos');
+          photosContainer.innerHTML = '';
+          if (room.photos && room.photos.length) {
+            room.photos.forEach(src => {
+              const img = document.createElement('img');
+              img.src = src;
+              img.alt = room.title + " Photo";
+              img.style.width = "120px";
+              img.style.borderRadius = "8px";
+              photosContainer.appendChild(img);
+            });
+          } else {
+            const img = document.createElement('img');
+            img.src = room.img;
+            img.alt = room.title + " Photo";
+            img.style.width = "120px";
+            img.style.borderRadius = "8px";
+            photosContainer.appendChild(img);
+          }
+        }
+        function convertCurrency() {
+          const php = parseFloat(document.getElementById('phpAmount').value);
+          const currency = document.getElementById('currencySelect').value;
+          let rate = 0, symbol = '', name = '';
+          if (currency === 'usd') { rate = 0.018; symbol = '$'; name = 'USD'; }
+          if (currency === 'eur') { rate = 0.017; symbol = '€'; name = 'EUR'; }
+          if (currency === 'jpy') { rate = 2.7; symbol = '¥'; name = 'JPY'; }
+          let resultText = '';
+          if (!isNaN(php) && php > 0) {
+            const converted = (php * rate).toFixed(2);
+            resultText = `₱${php} ≈ ${symbol}${converted} (${name})`;
+          } else {
+            resultText = 'Enter a valid amount.';
+          }
+          document.getElementById('conversionResult').textContent = resultText;
+          document.getElementById('conversionModal').style.display = 'flex';
+        }
+
+        function proceedToBooking(roomType, price) {
+          sessionStorage.setItem('roomType', roomType);
+          sessionStorage.setItem('price', price);
+          location.href = 'booking.html';
+        }
+
+        document.getElementById('about-link').onclick = function(e) {
+          e.preventDefault();
+          // Show a modal with About Us details
+          const aboutModal = document.createElement('div');
+          aboutModal.style.position = 'fixed';
+          aboutModal.style.top = '0';
+          aboutModal.style.left = '0';
+          aboutModal.style.width = '100%';
+          aboutModal.style.height = '100%';
+          aboutModal.style.background = 'rgba(0,0,0,0.7)';
+          aboutModal.style.display = 'flex';
+          aboutModal.style.justifyContent = 'center';
+          aboutModal.style.alignItems = 'center';
+          aboutModal.style.zIndex = '10000';
+          aboutModal.innerHTML = `
+            <div style="background:#fffbe9; padding:2em; border-radius:12px; max-width:600px; margin:auto; position:relative; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+              <span style="position:absolute; top:10px; right:20px; cursor:pointer; font-size:1.5em;" onclick="this.parentElement.parentElement.remove()">×</span>
+              <h2 style="color:#a17171; font-size:2em; margin-bottom:0.5em;">About Us</h2>
+              <p style="font-size:1.15em; color:#333; max-width:700px; margin:0 auto;">
+                DreamStay Hotel is your sanctuary in Port Macquarie, Australia. We offer modern rooms, world-class amenities, and exceptional service for both business and leisure travelers. Our mission is to provide a relaxing, comfortable, and memorable stay for every guest. Enjoy spacious accommodations, delicious cuisine, and easy access to local attractions. Whether you’re here for a family vacation, a romantic getaway, or a business trip, DreamStay Hotel is dedicated to making your experience extraordinary.
+              </p>
+              <ul style="text-align:left; max-width:700px; margin:2em auto 0 auto; color:#555;">
+                <li>✔️ Over 100 spacious rooms and suites</li>
+                <li>✔️ Award-winning restaurant and bar</li>
+                <li>✔️ Family-friendly facilities</li>
+                <li>✔️ Business center and meeting rooms</li>
+                <li>✔️ Easy access to beaches and attractions</li>
+                <li>✔️ Friendly, professional staff available 24/7</li>
+              </ul>
+            </div>
+          `;
+          document.body.appendChild(aboutModal);
+        };
+      </script>
+    </div>
+    <div class="four-col" style="text-align: left;">
+      <h2 style="text-align: center;">Amenities</h2>
+      <ul>
+        <li>✔️ Free Wi-Fi</li>
+        <li>✔️ Swimming Pool</li>
+        <li>✔️ Fitness Center</li>
+        <li>✔️ 24/7 Room Service</li>
+        <li>✔️ Complimentary Breakfast</li>
+        <li>✔️ Secure Parking</li>
+        <li>✔️ Airport Shuttle</li>
+        <li>✔️ Spa & Wellness Center</li>
+        <li>✔️ Conference Rooms</li>
+      </ul>
+      <h3 style="margin:2em;">Mode of Payments</h3>
+      <ul>
+        <li>💳 Credit Card (Visa, MasterCard, Amex)</li>
+        <li>🏦 Bank Transfer</li>
+        <li>💵 Cash</li>
+        <li>📱 GCash / PayMaya</li>
+        <li>🌐 Online Payment Portal</li>
+      </ul>
+      <h3 style="margin-top:2em;">Currency Calculator</h3>
+      <div id="currency-calc" style="margin:1em auto; text-align:center;">
+        <label for="phpAmount">Amount (₱):</label>
+        <input type="number" id="phpAmount" min="0" step="0.01" style="width:100px;">
+        <label for="currencySelect">Currency:</label>
+        <select id="currencySelect" title="Select currency">
+          <option value="usd">USD</option>
+          <option value="eur">EUR</option>
+          <option value="jpy">JPY</option>
+        </select>
+        <button type="button" onclick="convertCurrency()">Convert</button>
+      </div>
+    </div>
+    <div class="four-col">
+      <h2 style="text-align: center;">Reviews</h2>
+      <section class="testimonials">
+        <blockquote>
+          "Amazing stay! The staff were friendly and the amenities were top-notch." <br>
+          <cite>- Maria S.</cite>
+        </blockquote>
+        <blockquote>
+          "Loved the pool and breakfast. Will definitely come back!" <br>
+          <cite>- John D.</cite>
+        </blockquote>
+        <blockquote>
+          "Perfect location and very comfortable rooms. Highly recommend!" <br>
+          <cite>- Sarah L.</cite>
+        </blockquote>
+        <blockquote>
+          "Great for families! The kids loved the play area." <br>
+          <cite>- The Kim Family</cite>
+        </blockquote>
+      </section>
+    </div>
+    <div class="four-col" style="text-align:left;">
+      <h2 style="text-align: center;">Services</h2>
+      <ul>
+        <li>🧺 Laundry & Dry Cleaning</li>
+        <li>🚗 Airport Pickup & Drop-off</li>
+        <li>🎫 Tour Desk & Travel Assistance</li>
+        <li>🐾 Pet-Friendly Rooms</li>
+        <li>👶 Babysitting & Childcare</li>
+        <li>🛎️ Concierge Service</li>
+        <li>🧳 Luggage Storage</li>
+        <li>💼 Business Services </li>
+        <li>🩺 Medical Assistance</li>
+        <li>🎉 Event Planning & Catering</li>
+        <li>🎈 Special Occasion Packages</li>
+        <li>🚲 Bike Rentals</li>
+        <li>📶 High-Speed Internet Access</li>
+        <li>🛍️ Gift Shop</li>
+        <li>🍽️ In-Room Dining</li>
+      </ul>
+    </div>
+    <!-- Tourist Attractions Section -->
+<div class="four-col" style="text-align:left;">
+  <h2 style="text-align: center;">Tourist Attractions</h2>
+  <ul>
+    <li>🏖️ Town Beach – Relax and swim at Port Macquarie’s famous beach</li>
+    <li>🌳 Sea Acres Rainforest Centre – Explore scenic boardwalks and nature trails</li>
+    <li>🐨 Billabong Zoo – See koalas, kangaroos, and exotic animals</li>
+    <li>🚶 Coastal Walk – Enjoy breathtaking ocean views along the coastal path</li>
+    <li>🏛️ Port Macquarie Museum – Discover local history and culture</li>
+    <li>🛥️ Hastings River Cruises – Take a scenic river cruise</li>
+    <li>🎨 Glasshouse Arts Centre – Visit exhibitions, theatre, and events</li>
+    <li>🍷 Local Wineries – Taste regional wines and enjoy vineyard tours</li>
+  </ul>
+</div>
+</div>
+
+  <!-- FAQ -->
+  <section class="faq">
+    <h2>Frequently Asked Questions</h2>
+    <p><strong>What time is check-in?</strong> 2:00 PM</p>
+    <p><strong>Is breakfast included?</strong> Yes, complimentary breakfast is included.</p>
+  </section>
+
+  <!-- Gallery -->
+  <div class="gallery">
+    <figure>
+      <img alt="Pool" src="images/pool.jpg" onclick="openLightbox(this.src)">
+      <figcaption>Outdoor Pool</figcaption>
+    </figure>
+    <figure>
+      <img alt="Infinity Pool" src="images/infinitypool.png" onclick="openLightbox(this.src)">
+      <figcaption>Infinity Pool</figcaption>
+    </figure>
+    <figure>
+      <img alt="Night Pool" src="images/nightpool.png" onclick="openLightbox(this.src)">
+      <figcaption>Pool at Night</figcaption>
+    </figure>
+    <figure>
+      <img alt="Lobby" src="images/lobby.png" onclick="openLightbox(this.src)">
+      <figcaption>Modern Lobby</figcaption>
+    </figure>
+    <figure>
+      <img alt="Restaurant" src="images/restaurant.png" onclick="openLightbox(this.src)">
+      <figcaption>Restaurant & Bar</figcaption>
+    </figure>
+    <figure>
+      <img alt="Gym" src="images/gym.png" onclick="openLightbox(this.src)">
+      <figcaption>Fitness Center</figcaption>
+    </figure>
+    <figure>
+      <img alt="Spa" src="images/spa.png" onclick="openLightbox(this.src)">
+      <figcaption>Spa & Wellness</figcaption>
+    </figure>
+    <figure>
+      <img alt="Conference Room" src="images/conferenceroom.png" onclick="openLightbox(this.src)">
+      <figcaption>Conference Room</figcaption>
+    </figure>
+    <figure>
+      <img alt="Standard Room 1" src="images/standardroom1.jpg" onclick="openLightbox(this.src)">
+      <figcaption>Standard Room 1</figcaption>
+    </figure>
+    <figure>
+      <img alt="Standard Room 2" src="images/standardroom2.jpg" onclick="openLightbox(this.src)">
+      <figcaption>Standard Room 2</figcaption>
+    </figure>
+    <figure>
+      <img alt="Deluxe Room" src="images/deluxeroom.png" onclick="openLightbox(this.src)">
+      <figcaption>Deluxe Room 1</figcaption>
+    </figure>
+    <figure>
+      <img alt="Suite" src="images/suiteroom.png" onclick="openLightbox(this.src)">
+      <figcaption>Suite 1</figcaption>
+    </figure>
+  </div>
+  <div id="lightbox" onclick="this.style.display='none'" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); justify-content:center; align-items:center; z-index:2000;">
+    <img alt="" id="lightbox-img" style="max-width:90%; max-height:90%; border-radius:8px; transition:transform 0.2s;">
+    <div style="position:absolute; top:20px; right:40px;">
+      <button onclick="zoomLightbox(1.2); event.stopPropagation();" style="font-size:1.5em;">+</button>
+      <button onclick="zoomLightbox(0.8); event.stopPropagation();" style="font-size:1.5em;">−</button>
+      <button onclick="document.getElementById('lightbox').style.display='none'; event.stopPropagation();" style="font-size:1.5em;">×</button>
+    </div>
+  </div>
+  <!-- Contact Info -->
+  <address>
+    📍 Port Macquarie, Australia<br>
+    📞 +61 2 1234 5678<br>
+    ✉️ info@dreamstay.com
+  </address>
+  <iframe src="https://maps.google.com/maps?q=Port%20Macquarie&t=&z=13&ie=UTF8&iwloc=&output=embed"></iframe>
+
+  <!-- Footer -->
+  <footer>
+    <p>Follow us:</p>
+    <a href="https://facebook.com/dreamstayhotel" target="_blank">Facebook</a> |
+    <a href="https://instagram.com/dreamstayhotel" target="_blank">Instagram</a>
+  </footer>
+
+  <!-- Modals -->
+  <div id="homeModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:1000;">
+    <div style="background:rgb(146, 237, 222); padding:2em; border-radius:10px; max-width:500px; margin:auto; position:relative;">
+      <span style="position:absolute; top:10px; right:20px; cursor:pointer; font-size:1.5em;" onclick="document.getElementById('homeModal').style.display='none'">&times;</span>
+      <h2>About DreamStay Hotel</h2>
+      <p>
+        DreamStay Hotel is your sanctuary in Port Macquarie, Australia. Enjoy modern rooms, world-class amenities, and exceptional service. Whether you’re traveling for business or leisure, our hotel offers the perfect blend of comfort and convenience.
+      </p>
+      <ul style="text-align:left;">
+        <li>✔️ 100+ spacious rooms and suites</li>
+        <li>✔️ Award-winning restaurant and bar</li>
+        <li>✔️ Family-friendly facilities</li>
+        <li>✔️ Business center and meeting rooms</li>
+        <li>✔️ Easy access to local attractions</li>
+      </ul>
+    </div>
+  </div>
+  <div id="roomsModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:1000;">
+    <div style="background:rgb(235, 227, 162); padding:2em; border-radius:10px; max-width:700px; margin:auto; position:relative;">
+      <span style="position:absolute; top:10px; right:20px; cursor:pointer; font-size:1.5em;" onclick="document.getElementById('roomsModal').style.display='none'">&times;</span>
+      <h2>Room Gallery & Features</h2>
+      <div style="display:flex; flex-wrap:wrap; gap:2em; justify-content:center;">
+        <!-- Standard Room -->
+        <div style="flex:1; min-width:200px; background:#fff; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.04); padding:1em;">
+          <img src="images/standardroom1.jpg" alt="Standard Room" style="width:100%; border-radius:8px; margin-bottom:1em;">
+          <h3>Standard Room</h3>
+          <ul style="text-align:left;">
+            <li>Queen bed</li>
+            <li>Ensuite bathroom</li>
+            <li>City view</li>
+            <li>Air conditioning</li>
+            <li>Free Wi-Fi</li>
+          </ul>
+        </div>
+        <!-- Deluxe Room -->
+        <div style="flex:1; min-width:200px; background:#fff; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.04); padding:1em;">
+          <img src="images/deluxeroom.png" alt="Deluxe Room" style="width:100%; border-radius:8px; margin-bottom:1em;">
+          <h3>Deluxe Room</h3>
+          <ul style="text-align:left;">
+            <li>King bed</li>
+            <li>Ensuite bathroom</li>
+            <li>Private balcony</li>
+            <li>Air conditioning</li>
+            <li>Free Wi-Fi</li>
+          </ul>
+        </div>
+        <!-- Suite -->
+        <div style="flex:1; min-width:200px; background:#fff; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.04); padding:1em;">
+          <img src="images/suiteroom.png" alt="Suite" style="width:100%; border-radius:8px; margin-bottom:1em;">
+          <h3>Suite</h3>
+          <ul style="text-align:left;">
+            <li>King bed</li>
+            <li>Living area</li>
+            <li>Ensuite bathroom</li>
+            <li>Mini bar</li>
+            <li>Free Wi-Fi</li>
+          </ul>
+        </div>
+        <!-- Family Room -->
+        <div style="flex:1; min-width:200px; background:#fff; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.04); padding:1em;">
+          <img src="images/familyroom.png" alt="Family Room" style="width:100%; border-radius:8px; margin-bottom:1em;">
+          <h3>Family Room</h3>
+          <ul style="text-align:left;">
+            <li>Two queen beds</li>
+            <li>Ensuite bathroom</li>
+            <li>Play area for kids</li>
+            <li>Mini fridge</li>
+            <li>Free Wi-Fi</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="bookingModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:1000;">
+    <div style="background:rgb(180, 209, 237); padding:2em; border-radius:10px; max-width:500px; margin:auto; position:relative;">
+      <span style="position:absolute; top:10px; right:20px; cursor:pointer; font-size:1.5em;" onclick="document.getElementById('bookingModal').style.display='none'">&times;</span>
+      <h2>Booking Information</h2>
+      <p>
+        Reserve your stay at DreamStay Hotel! Choose your preferred room, select your dates, and let us know any special requests. Our team will confirm your booking and ensure a seamless experience.
+      </p>
+      <ul style="text-align:left;">
+        <li>✔️ Flexible check-in and check-out times</li>
+        <li>✔️ Free cancellation up to 24 hours before arrival</li>
+        <li>✔️ Secure online payment options</li>
+        <li>✔️ Special rates for extended stays</li>
+        <li>✔️ Group and event booking available</li>
+      </ul>
+    </div>
+  </div>
+  <div id="galleryModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); justify-content:center; align-items:center; z-index:1000;">
+    <div style="background:#fff; padding:2em; border-radius:10px; max-width:900px; margin:auto; position:relative;">
+      <span style="position:absolute; top:10px; right:20px; cursor:pointer; font-size:2em;" onclick="document.getElementById('galleryModal').style.display='none'">&times;</span>
+      <h2 style="text-align:center; margin-bottom:1em;">Gallery</h2>
+      <div style="display:flex; flex-wrap:wrap; gap:1em; justify-content:center;">
+        <!-- Make each image clickable for lightbox/zoom -->
+        <img src="images/pool.jpg" alt="Pool" style="width:180px; border-radius:8px; cursor:pointer;" onclick="openLightbox(this.src)">
+        <img src="images/infinitypool.png" alt="Infinity Pool" style="width:180px; border-radius:8px; cursor:pointer;" onclick="openLightbox(this.src)">
+        <img src="images/nightpool.png" alt="Night Pool" style="width:180px; border-radius:8px; cursor:pointer;" onclick="openLightbox(this.src)">
+        <img src="images/lobby.png" alt="Lobby" style="width:180px; border-radius:8px; cursor:pointer;" onclick="openLightbox(this.src)">
+        <img src="images/restaurant.png" alt="Restaurant" style="width:180px; border-radius:8px; cursor:pointer;" onclick="openLightbox(this.src)">
+        <img src="images/gym.png" alt="Gym" style="width:180px; border-radius:8px; cursor:pointer;" onclick="openLightbox(this.src)">
+        <img src="images/spa.png" alt="Spa" style="width:180px; border-radius:8px; cursor:pointer;" onclick="openLightbox(this.src)">
+        <img src="images/conferenceroom.png" alt="Conference Room" style="width:180px; border-radius:8px; cursor:pointer;" onclick="openLightbox(this.src)">
+        <img src="images/standardroom1.jpg" alt="Standard Room 1" style="width:180px; border-radius:8px; cursor:pointer;" onclick="openLightbox(this.src)">
+        <img src="images/standardroom2.jpg" alt="Standard Room 2" style="width:180px; border-radius:8px; cursor:pointer;" onclick="openLightbox(this.src)">
+        <img src="images/deluxeroom.png" alt="Deluxe Room" style="width:180px; border-radius:8px; cursor:pointer;" onclick="openLightbox(this.src)">
+        <img src="images/suiteroom.png" alt="Suite" style="width:180px; border-radius:8px; cursor:pointer;" onclick="openLightbox(this.src)">
+        <img src="images/familyroom.png" alt="Family Room" style="width:180px; border-radius:8px; cursor:pointer;" onclick="openLightbox(this.src)">
+        <img src="images/restaurant2.png" alt="Restaurant 2" style="width:180px; border-radius:8px; cursor:pointer;" onclick="openLightbox(this.src)">
+        <img src="images/lounge.png" alt="Lounge" style="width:180px; border-radius:8px; cursor:pointer;" onclick="openLightbox(this.src)">
+        <img src="images/bar.png" alt="Bar" style="width:180px; border-radius:8px; cursor:pointer;" onclick="openLightbox(this.src)">
+        <img src="images/playground.png" alt="Playground" style="width:180px; border-radius:8px; cursor:pointer;" onclick="openLightbox(this.src)">
+        <img src="images/hotelexterior.png" alt="Hotel Exterior" style="width:180px; border-radius:8px; cursor:pointer;" onclick="openLightbox(this.src)">
+        </div>
+    </div>
+  </div>
+  <div id="contactModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:1000;">
+    <div style="background:rgb(212, 236, 174); padding:2em; border-radius:10px; max-width:500px; margin:auto; position:relative;">
+      <span style="position:absolute; top:10px; right:20px; cursor:pointer; font-size:1.5em;" onclick="document.getElementById('contactModal').style.display='none'">&times;</span>
+      <h2>Contact Details</h2>
+      <p>
+        We're here to help! Reach out for reservations, questions, or feedback. Our staff is available 24/7 to assist you.
+      </p>
+      <ul style="text-align:left;">
+        <li>📞 Phone: +61 2 1234 5678</li>
+        <li>✉️ Email: info@dreamstay.com</li>
+        <li>📍 Address: Port Macquarie, NSW, Australia</li>
+        <li>✔️ Social Media: Facebook & Instagram</li>
+        <li>✔️ Quick response to all inquiries</li>
+      </ul>
+    </div>
+  </div>
+    <div id="souvenirshopModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:1000;">
+  <div style="background:rgb(237, 222, 146); padding:2em; border-radius:10px; max-width:700px; margin:auto; position:relative; min-height:600px;">
+    <span style="position:absolute; top:10px; right:20px; cursor:pointer; font-size:1.5em;" onclick="document.getElementById('souvenirshopModal').style.display='none'">&times;</span>
+    <h2>Souvenir Shop</h2>
+    <iframe src="souvenir.html" style="width:100%; height:520px; border:none; border-radius:8px; background:#fffbe9;"></iframe>
+  </div>
+</div>
+<div id="aboutusModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:1000;">
+    <div style="background:#fffbe9; padding:2em; border-radius:12px; max-width:600px; margin:auto; position:relative; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+      <span style="position:absolute; top:10px; right:20px; cursor:pointer; font-size:1.5em;" onclick="document.getElementById('aboutusModal').style.display='none'">&times;</span>
+      <h2 style="color:#a17171; font-size:2em; margin-bottom:0.5em;">About Us</h2>
+      <p style="font-size:1.15em; color:#333; max-width:700px; margin:0 auto;">
+        DreamStay Hotel is your sanctuary in Port Macquarie, Australia. We offer modern rooms, world-class amenities, and exceptional service for both business and leisure travelers. Our mission is to provide a relaxing, comfortable, and memorable stay for every guest. Enjoy spacious accommodations, delicious cuisine, and easy access to local attractions. Whether you’re here for a family vacation, a romantic getaway, or a business trip, DreamStay Hotel is dedicated to making your experience extraordinary.
+      </p>
+      <ul style="text-align:left; max-width:700px; margin:2em auto 0 auto; color:#555;">
+        <li>✔️ Over 100 spacious rooms and suites</li>
+        <li>✔️ Award-winning restaurant and bar</li>
+        <li>✔️ Family-friendly facilities</li>
+        <li>✔️ Business center and meeting rooms</li>
+        <li>✔️ Easy access to beaches and attractions</li>
+        <li>✔️ Friendly, professional staff available 24/7</li>
+      </ul>
+    </div>
+  </div>
+  <div id="signInModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:1000;">
+    <div style="background:rgb(158, 239, 239); padding:2em; border-radius:20px; max-width:600px; margin:auto; position:relative;">
+      <span style="position:absolute; top:10px; right:20px; cursor:pointer; font-size:1.5em;" onclick="document.getElementById('signInModal').style.display='none'">&times;</span>
+      <h2>Sign In</h2>
+      <form id="signInForm">
+      <label for="email">Email:</label>
+      <input type="email" id="email" required>
+      <label for="password">Password:</label>
+      <input type="password" id="password" required>
+      <button type="submit">Sign In</button>
+    </form>
+    <div id="signInResult" class="result"></div>
+    <div class="links">
+      <a href="#" id="forgot-link">Forgot Password?</a> | 
+      <a href="#" id="create-link">Create Account</a>
+    </div>
+    <div style="text-align:center; margin-top:2em;">
+      <button id="google-signin" style="background:#4285F4; color:#fff; border:none; border-radius:5px; padding:0.7em 2em; font-size:1em; margin-bottom:1em; cursor:pointer;">
+        <img src="images/google-icon.png" alt="Google" style="height:20px; vertical-align:middle; margin-right:8px;"> Sign in with Google
+      </button>
+      <br>
+      <button id="fb-signin" style="background:#3b5998; color:#fff; border:none; border-radius:5px; padding:0.7em 2em; font-size:1em; cursor:pointer;">
+        <img src="images/facebook-icon.png" alt="Facebook" style="height:20px; vertical-align:middle; margin-right:8px;"> Sign in with Facebook
+      </button>
+    </div>
+  </div>
+  <script>
+    document.getElementById('signInForm').onsubmit = function(e) {
+      e.preventDefault();
+      alert('Sign in successful!');
+      document.getElementById('signInModal').style.display = 'none';
+    };
+    document.getElementById('create-link').onclick = function(e) {
+      e.preventDefault();
+      alert("Create Account feature coming soon!");
+    };
+    document.getElementById('forgot-link').onclick = function(e) {
+      e.preventDefault();
+      alert("Forgot Password feature coming soon!");
+    };
+    document.getElementById('google-signin').onclick = function(e) {
+      e.preventDefault();
+      alert("Google Sign-In feature coming soon!");
+    };
+    document.getElementById('fb-signin').onclick = function(e) {
+      e.preventDefault();
+      alert("Facebook Sign-In feature coming soon!");
+    };
+      </script>
+    </div>
+  <div id="roomDetailsModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:1000;">
+    <div style="background:white; padding:2em; border-radius:10px; max-width:500px; margin:auto; position:relative;">
+      <span style="position:absolute; top:10px; right:20px; cursor:pointer; font-size:1.5em;" onclick="document.getElementById('roomDetailsModal').style.display='none'">&times;</span>
+      <h2 id="modalRoomTitle">Room Name</h2>
+      <div id="modalRoomPhotos" style="display:flex; gap:10px; justify-content:center; margin-bottom:1em;"></div>
+      <ul id="modalRoomFeatures"></ul>
+      <p id="modalRoomPolicy"><strong>Cancellation Policy:</strong> ...</p>
+      <p id="modalRoomOccupancy"><strong>Max Occupancy:</strong> ...</p>
+      <p id="modalRoomCheckin"><strong>Check-in:</strong> 2:00 PM</p>
+      <p id="modalRoomCheckout"><strong>Check-out:</strong> 12:00 NN</p>
+      <p id="modalRoomPrice"><strong>Price:</strong> ...</p>
+      <blockquote id="modalRoomReview">"Great room for families!"</blockquote>
+      <button onclick="proceedToBooking('Suite', '₱6,500/night')">Proceed to Booking</button>
+      <script>
+        function proceedToBooking(roomType, price) {
+          sessionStorage.setItem('roomType', roomType);
+          sessionStorage.setItem('price', price);
+          location.href = 'booking.html';
+        }
+      </script>
+    </div>
+  </div>
+  <div id="conversionModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:1000;">
+    <div style="background:white; padding:2em; border-radius:10px; max-width:350px; margin:auto; position:relative; text-align:center;">
+      <span style="position:absolute; top:10px; right:20px; cursor:pointer; font-size:1.5em;" onclick="document.getElementById('conversionModal').style.display='none'">&times;</span>
+      <h2>Currency Conversion</h2>
+      <div id="conversionResult" style="margin-top:1em; font-size:1.2em; font-weight:bold;"></div>
+    </div>
+  </div>
+  
+  <div id="paymentModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:1000;">
+    <div style="background:white; padding:2em; border-radius:10px; max-width:400px; margin:auto; position:relative; text-align:center;">
+      <span style="position:absolute; top:10px; right:20px; cursor:pointer; font-size:1.5em;" onclick="document.getElementById('paymentModal').style.display='none'">&times;</span>
+      <h2>Booking Summary</h2>
+      <div id="bookingSummary"></div>
+      <button onclick="proceedToPayment()">Proceed to Payment</button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    document.getElementById("bookingForm").onsubmit = function(e) {
+      e.preventDefault();
+
+      // Get form values
+      const nights = parseInt(document.getElementById('nights').value, 10);
+      const rooms = parseInt(document.getElementById('rooms').value, 10);
+      const roomType = document.getElementById('room').value;
+
+      // Room prices
+      const prices = {
+        "Standard": 2500,
+        "Deluxe": 4000,
+        "Suite": 6500,
+        "Family Room": 7500
+      };
+      const pricePerNight = prices[roomType] || 0;
+      const total = pricePerNight * nights * rooms;
+
+      // Show summary modal
+      document.getElementById('bookingSummary').innerHTML = `
+        <p><strong>Room Type:</strong> ${roomType}</p>
+        <p><strong>Number of Nights:</strong> ${nights}</p>
+        <p><strong>Number of Rooms:</strong> ${rooms}</p>
+        <p><strong>Total:</strong> ₱${total.toLocaleString()}</p>
+      `;
+      document.getElementById('paymentModal').style.display = 'flex';
+
+      // Save to sessionStorage
+      sessionStorage.setItem('guestName', document.getElementById('guest name').value);
+      sessionStorage.setItem('email', document.getElementById('email').value);
+      sessionStorage.setItem('phone', document.getElementById('phone').value);
+      sessionStorage.setItem('roomType', document.getElementById('room').value);
+      sessionStorage.setItem('nights', document.getElementById('nights').value);
+      sessionStorage.setItem('rooms', document.getElementById('rooms').value);
+      sessionStorage.setItem('pricePerNight', pricePerNight);
+      sessionStorage.setItem('checkin', document.getElementById('checkin').value);
+      sessionStorage.setItem('checkout', document.getElementById('checkout').value);
+      sessionStorage.setItem('adults', document.getElementById('adults').value);
+      sessionStorage.setItem('children', document.getElementById('children').value);
+      sessionStorage.setItem('requests', document.getElementById('requests').value);
+    };
+
+    function proceedToPayment() {
+      // Redirect to payment page or show payment form
+      window.location.href = "payment.html";
+    }
+
+    let zoomLevel = 1;
+    function openLightbox(src) {
+      zoomLevel = 1;
+      const img = document.getElementById("lightbox-img");
+      img.src = src;
+      img.style.transform = "scale(1)";
+      document.getElementById("lightbox").style.display = "flex";
+    }
+    function zoomLightbox(factor) {
+      zoomLevel *= factor;
+      document.getElementById("lightbox-img").style.transform = `scale(${zoomLevel})`;
+    }
+
+    document.querySelector('nav a[href="index.html"]').onclick = function(e) {
+      e.preventDefault();
+      document.getElementById('homeModal').style.display = 'flex';
+    };
+    document.querySelector('nav a[href="rooms.html"]').onclick = function(e) {
+      e.preventDefault();
+      document.getElementById('roomsModal').style.display = 'flex';
+    };
+    document.querySelector('nav a[href="booking.html"]').onclick = function(e) {
+      e.preventDefault();
+      document.getElementById('bookingModal').style.display = 'flex';
+    };
+    document.querySelector('nav a[href="contact.html"]').onclick = function(e) {
+      e.preventDefault();
+      document.getElementById('contactModal').style.display = 'flex';
+    };
+    document.querySelector('nav a[href="souvenir.html"]').onclick = function(e) {
+      e.preventDefault();
+      document.getElementById('souvenirModal').style.display = 'flex';
+    };
+    document.querySelector('nav a[href="aboutus.html"]').onclick = function(e) {
+      e.preventDefault();
+      document.getElementById('aboutusModal').style.display = 'flex';
+    };
+    document.querySelector('nav a[href="signIn.html"]').onclick = function(e) {
+      e.preventDefault();
+      document.getElementById('signInModal').style.display = 'flex';
+    };
+    document.getElementById('signInForm').onsubmit = function(e) {
+      e.preventDefault();
+      alert('Sign in successful!');
+    };
+    document.getElementById('forgot-link').onclick = function(e) {
+      e.preventDefault();
+      alert('Forgot Password feature coming soon!');
+    };
+    document.getElementById('create-link').onclick = function(e) {
+      e.preventDefault();
+      alert('Create Account feature coming soon!');
+    };
+    document.getElementById('google-signin').onclick = function(e) {
+      e.preventDefault();
+      alert('Google Sign-In feature coming soon!');
+    };
+    document.getElementById('fb-signin').onclick = function(e) {
+      e.preventDefault();
+      alert('Facebook Sign-In feature coming soon!');
+    };
+    function showRoomDetails(type) {
+      const rooms = {
+        standard: {
+          title: "Standard Room",
+          img: "images/standardroom1.jpg",
+          photos: [
+            "images/standardroom1.jpg",
+            "images/standardroom2.jpg"
+          ],
+          features: [
+            "Air Conditioning",
+            "Free Wi-Fi",
+            "Flat-screen TV",
+            "Complimentary toiletries",
+            "Daily housekeeping"
+          ],
+          policy: "Free cancellation up to 24 hours before check-in.",
+          occupancy: "2 adults",
+          price: "₱2,500/night",
+          review: "\"Perfect for solo travelers or couples!\""
+        },
+        deluxe: {
+          title: "Deluxe Room",
+          img: "images/deluxeroom.png",
+          photos: [
+            "images/deluxeroom.png"
+          ],
+          features: [
+            "Air Conditioning",
+            "Free Wi-Fi",
+            "Flat-screen TV",
+            "Balcony with view",
+            "Complimentary toiletries",
+            "Daily housekeeping"
+          ],
+          policy: "Free cancellation up to 24 hours before check-in.",
+          occupancy: "3 adults",
+          price: "₱4,000/night",
+          review: "\"Spacious and comfortable!\""
+        },
+        suite: {
+          title: "Suite",
+          img: "images/suiteroom.png",
+          photos: [
+            "images/suiteroom.png"
+          ],
+          features: [
+            "Air Conditioning",
+            "Free Wi-Fi",
+            "Flat-screen TV",
+            "Living area",
+            "Complimentary toiletries",
+            "Daily housekeeping",
+            "Mini bar"
+          ],
+          policy: "Free cancellation up to 24 hours before check-in.",
+          occupancy: "4 adults",
+          price: "₱6,500/night",
+          review: "\"Luxury at its best!\""
+        },
+        family: {
+          title: "Family Room",
+          img: "images/familyroom.png",
+          photos: [
+            "images/familyroom.png"
+          ],
+          features: [
+            "Air Conditioning",
+            "Free Wi-Fi",
+            "Flat-screen TV",
+            "Play area for kids",
+            "Complimentary toiletries",
+            "Daily housekeeping",
+            "Mini fridge"
+          ],
+          policy: "Free cancellation up to 24 hours before check-in.",
+          occupancy: "4 adults + 2 children",
+          price: "₱7,500/night",
+          review: "\"Great for families with kids!\""
+        }
+      };
+
+      const room = rooms[type];
+      document.getElementById('modalRoomTitle').textContent = room.title;
+      document.getElementById('modalRoomFeatures').innerHTML = room.features.map(f => `<li>✔️ ${f}</li>`).join('');
+      document.getElementById('modalRoomPolicy').innerHTML = `<strong>Cancellation Policy:</strong> ${room.policy}`;
+      document.getElementById('modalRoomOccupancy').innerHTML = `<strong>Max Occupancy:</strong> ${room.occupancy}`;
+      document.getElementById('modalRoomPrice').innerHTML = `<strong>Price:</strong> ${room.price}`;
+      document.getElementById('modalRoomReview').textContent = room.review;
+      document.getElementById('roomDetailsModal').style.display = 'flex';
+
+      // Add room photos to the modal
+      const photosContainer = document.getElementById('modalRoomPhotos');
+      photosContainer.innerHTML = '';
+      if (room.photos && room.photos.length) {
+        room.photos.forEach(src => {
+          const img = document.createElement('img');
+          img.src = src;
+          img.alt = room.title + " Photo";
+          img.style.width = "120px";
+          img.style.borderRadius = "8px";
+          photosContainer.appendChild(img);
+        });
+      } else {
+        const img = document.createElement('img');
+        img.src = room.img;
+        img.alt = room.title + " Photo";
+        img.style.width = "120px";
+        img.style.borderRadius = "8px";
+        photosContainer.appendChild(img);
+      }
+    }
+    function convertCurrency() {
+      const php = parseFloat(document.getElementById('phpAmount').value);
+      const currency = document.getElementById('currencySelect').value;
+      let rate = 0, symbol = '', name = '';
+      if (currency === 'usd') { rate = 0.018; symbol = '$'; name = 'USD'; }
+      if (currency === 'eur') { rate = 0.017; symbol = '€'; name = 'EUR'; }
+      if (currency === 'jpy') { rate = 2.7; symbol = '¥'; name = 'JPY'; }
+      let resultText = '';
+      if (!isNaN(php) && php > 0) {
+        const converted = (php * rate).toFixed(2);
+        resultText = `₱${php} ≈ ${symbol}${converted} (${name})`;
+      } else {
+        resultText = 'Enter a valid amount.';
+      }
+      document.getElementById('conversionResult').textContent = resultText;
+      document.getElementById('conversionModal').style.display = 'flex';
+  </script>
+</body>
+</html>

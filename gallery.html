@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Gallery - DreamStay Hotel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700|Roboto:400,500&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Montserrat', 'Roboto', Tahoma, sans-serif; background: #bae9e7; margin: 0; padding: 0; }
+    .container { max-width: 900px; margin: 2em auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 2em; }
+    h1 { color: #a17171; text-align: center; margin-bottom: 1em; }
+    .gallery-grid { display: flex; flex-wrap: wrap; gap: 1.5em; justify-content: center; }
+    .gallery-img { width: 220px; border-radius: 10px; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: transform 0.2s; }
+    .gallery-img:hover { transform: scale(1.05); }
+    #lightbox { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); justify-content:center; align-items:center; z-index:2000; }
+    #lightbox-img { max-width:90%; max-height:90%; border-radius:10px; box-shadow: 0 2px 16px rgba(0,0,0,0.2); transition:transform 0.2s; }
+    #lightbox-close { position:absolute; top:30px; right:60px; font-size:2em; color:#fff; background:none; border:none; cursor:pointer; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Gallery</h1>
+    <div class="gallery-grid">
+      <img src="images/pool.jpg" alt="Pool" class="gallery-img" onclick="openLightbox(this.src)">
+      <img src="images/infinitypool.png" alt="Infinity Pool" class="gallery-img" onclick="openLightbox(this.src)">
+      <img src="images/nightpool.png" alt="Night Pool" class="gallery-img" onclick="openLightbox(this.src)">
+      <img src="images/lobby.png" alt="Lobby" class="gallery-img" onclick="openLightbox(this.src)">
+      <img src="images/restaurant.png" alt="Restaurant" class="gallery-img" onclick="openLightbox(this.src)">
+      <img src="images/gym.png" alt="Gym" class="gallery-img" onclick="openLightbox(this.src)">
+      <img src="images/spa.png" alt="Spa" class="gallery-img" onclick="openLightbox(this.src)">
+      <img src="images/conferenceroom.png" alt="Conference Room" class="gallery-img" onclick="openLightbox(this.src)">
+      <img src="images/standardroom1.jpg" alt="Standard Room 1" class="gallery-img" onclick="openLightbox(this.src)">
+      <img src="images/standardroom2.jpg" alt="Standard Room 2" class="gallery-img" onclick="openLightbox(this.src)">
+      <img src="images/deluxeroom.png" alt="Deluxe Room" class="gallery-img" onclick="openLightbox(this.src)">
+      <img src="images/suiteroom.png" alt="Suite" class="gallery-img" onclick="openLightbox(this.src)">
+      <img src="images/familyroom.png" alt="Family Room" class="gallery-img" onclick="openLightbox(this.src)">
+      <img src="images/restaurant2.png" alt="Restaurant 2" class="gallery-img" onclick="openLightbox(this.src)">
+      <img src="images/garden.png" alt="Garden" class="gallery-img" onclick="openLightbox(this.src)">
+      <img src="images/lounge.png" alt="Lounge" class="gallery-img" onclick="openLightbox(this.src)">
+      <img src="images/bar.png" alt="Bar" class="gallery-img" onclick="openLightbox(this.src)">
+      <img src="images/playground.png" alt="Playground" class="gallery-img" onclick="openLightbox(this.src)">
+      <img src="images/hotelexterior.png" alt="Hotel Exterior 2" class="gallery-img" onclick="openLightbox(this.src)">
+    </div>
+  </div>
+  <div id="lightbox" onclick="closeLightbox()">
+    <button id="lightbox-close" onclick="closeLightbox(); event.stopPropagation();">&times;</button>
+    <img id="lightbox-img" alt="">
+  </div>
+  <script>
+    function openLightbox(src) {
+      document.getElementById('lightbox-img').src = src;
+      document.getElementById('lightbox').style.display = 'flex';
+    }
+    function closeLightbox() {
+      document.getElementById('lightbox').style.display = 'none';
+      document.getElementById('lightbox-img').src = '';
+    }
+  </script>
+</body>
+</html>

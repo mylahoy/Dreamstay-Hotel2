@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Rooms - DreamStay Hotel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700|Roboto:400,500&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Montserrat', 'Roboto', Tahoma, sans-serif; background: #bae9e7; margin: 0; padding: 0; }
+    .container { max-width: 900px; margin: 2em auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 2em; }
+    h1 { color: #a17171; text-align: center; margin-bottom: 1em; }
+    .room-list { display: flex; flex-wrap: wrap; gap: 2em; justify-content: center; }
+    .room-card { background: #f7f9fa; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); padding: 1.5em; width: 260px; text-align: center; }
+    .room-card img { width: 100%; border-radius: 8px; margin-bottom: 1em; }
+    .room-card h2 { color: #a17171; font-size: 1.3em; margin-bottom: 0.5em; }
+    .room-card p { color: #333; font-size: 1em; margin-bottom: 0.5em; }
+    .room-card .price { color: #a17171; font-weight: bold; font-size: 1.1em; margin-bottom: 1em; }
+    .room-card button { background: #a17171; color: #fff; border: none; border-radius: 6px; padding: 0.5em 1.5em; font-size: 1em; cursor: pointer; }
+    .room-card button:hover { background: #d19c9c; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Our Rooms</h1>
+    <div class="room-list">
+      <div class="room-card">
+        <img src="images/standardroom1.jpg" alt="Standard Room">
+        <h2>Standard Room</h2>
+        <p>Cozy and comfortable, perfect for solo travelers or couples.</p>
+        <div class="price">₱2,500/night</div>
+        <button onclick="window.location.href='booking.html'">Book Now</button>
+      </div>
+      <div class="room-card">
+        <img src="images/deluxeroom.png" alt="Deluxe Room">
+        <h2>Deluxe Room</h2>
+        <p>Spacious room with premium amenities and a beautiful view.</p>
+        <div class="price">₱4,000/night</div>
+        <button onclick="window.location.href='booking.html'">Book Now</button>
+      </div>
+      <div class="room-card">
+        <img src="images/suiteroom.png" alt="Suite">
+        <h2>Suite</h2>
+        <p>Luxurious suite with separate living area and exclusive features.</p>
+        <div class="price">₱6,500/night</div>
+        <button onclick="window.location.href='booking.html'">Book Now</button>
+      </div>
+      <div class="room-card">
+        <img src="images/familyroom.png" alt="Family Room">
+        <h2>Family Room</h2>
+        <p>Ideal for families, with extra space and kid-friendly amenities.</p>
+        <div class="price">₱7,500/night</div>
+        <button onclick="window.location.href='booking.html'">Book Now</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
